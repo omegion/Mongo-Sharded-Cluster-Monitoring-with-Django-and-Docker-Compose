@@ -6,6 +6,9 @@ A simple sharded Mongo Cluster monitoring application using with Django and Dock
 It is designed to monitor and experimental purpose to investigate replica set behaviours during `polling` and under massive request.
 Django is used to virtualise the data on the backend. Moreover, Vue JS is used for frontend with Apexcharts.
 
+![screenshot](https://github.com/omegion/Mongo-Sharded-Cluster-Monitoring-with-Django-and-Docker-Compose/blob/master/screenshot.png?raw=true "Screenshot")
+
+
 ### Mongo Components
 
 * Config Server (3 member replica set): `config01`,`config02`,`config03`
