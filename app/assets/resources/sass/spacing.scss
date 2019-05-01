@@ -1,0 +1,234 @@
+/* 
+Start Bootstrap style responsive spacer helper
+Utilities for spacing, text and float
+*/
+
+
+$spacer: 1rem !default;
+$spacers: () !default;
+$spacers: map-merge((
+  0: 0,
+  1: ($spacer * .25),
+  2: ($spacer * .5),
+  3: $spacer,
+  4: ($spacer * 1.5),
+  5: ($spacer * 3),
+  6: ($spacer * 6),
+  7: ($spacer * 12),
+  8: ($spacer * 13),
+), $spacers);
+
+$grid-breakpoints: (
+  xs: 0,
+  mobile: 576px, // Added because I felt there needs to be more control for smaller devices
+  tablet: $tablet,
+  desktop: $desktop,
+  widescreen: $widescreen,
+  hd: $fullhd
+) !default;
+
+@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+  $min: map-get($breakpoints, $name);
+  @return if($min != 0, $min, null);
+}
+
+@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
+  @return if(breakpoint-min($name, $breakpoints) == null, "", "-#{$name}");
+}
+
+@function breakpoint-next($name, $breakpoints: $grid-breakpoints, $breakpoint-names: map-keys($breakpoints)) {
+  $n: index($breakpoint-names, $name);
+  @return if($n < length($breakpoint-names), nth($breakpoint-names, $n + 1), null);
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    @each $prop, $abbrev in (margin: m, padding: p) {
+      @each $size, $length in $spacers {
+
+        .is-#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
+        .is-#{$abbrev}t#{$infix}-#{$size},
+        .is-#{$abbrev}y#{$infix}-#{$size} {
+          #{$prop}-top: $length !important;
+        }
+        .is-#{$abbrev}r#{$infix}-#{$size},
+        .is-#{$abbrev}x#{$infix}-#{$size} {
+          #{$prop}-right: $length !important;
+        }
+        .is-#{$abbrev}b#{$infix}-#{$size},
+        .is-#{$abbrev}y#{$infix}-#{$size} {
+          #{$prop}-bottom: $length !important;
+        }
+        .is-#{$abbrev}l#{$infix}-#{$size},
+        .is-#{$abbrev}x#{$infix}-#{$size} {
+          #{$prop}-left: $length !important;
+        }
+      }
+    }
+
+    // Some special margin utils
+    .is-m#{$infix}-auto { margin: auto !important; }
+    .is-mt#{$infix}-auto,
+    .is-my#{$infix}-auto {
+      margin-top: auto !important;
+    }
+    .is-mr#{$infix}-auto,
+    .is-mx#{$infix}-auto {
+      margin-right: auto !important;
+    }
+    .is-mb#{$infix}-auto,
+    .is-my#{$infix}-auto {
+      margin-bottom: auto !important;
+    }
+    .is-ml#{$infix}-auto,
+    .is-mx#{$infix}-auto {
+      margin-left: auto !important;
+    }
+  }
+}
+
+/**
+ * Text
+ */
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    .has-text#{$infix}-left   { text-align: left !important; }
+    .has-text#{$infix}-right  { text-align: right !important; }
+    .has-text#{$infix}-center { text-align: center !important; }
+  }
+}
+
+/**
+ * Float
+ */
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    .is-float#{$infix}-left  { float: left !important; }
+    .is-float#{$infix}-right { float: right !important; }
+    .is-float#{$infix}-none  { float: none !important; }
+  }
+}
+
+$positions: 'right' 'top' 'bottom' 'left';
+@each $position in $positions {
+  .has-border-#{$position} {
+    border-#{$position}: 2px solid #ededed;
+  }
+}
+
+$values: 0 4 5 6 500;
+@each $value in $values {
+  .is-border-radius-#{$value} {
+    border-radius: #{$value}px;
+  }
+}
+
+$values: 0 1 2 3 4;
+@each $value in $values {
+  .has-border-#{$value} {
+    border: solid #{$value}px $secondary-soft;
+  }
+}
+
+.dialog.modal.is-active {
+  z-index: 10000;
+}
+
+.modal-card {
+  overflow: auto;
+}
+
+.modal-card .modal-card-head.style-1 {
+  background: url(/assets/svg/modal-header.svg) 90% 20px no-repeat;
+  height: 80px;
+  -webkit-tap-highlight-color: transparent;
+  background-color: #f8f9fa;
+}
+
+.menu-footer {
+  position: absolute;
+  bottom: 1rem;
+  width: 100%;
+  border-top: 2px solid #e0e0e094;
+  left: 0.75rem;
+}
+
+.modal.full-screen .modal-content {
+  padding-left: 280px;
+  height: 100%;
+  max-height: 100vh !important;
+  background-color: #fdeff1;
+}
+
+// CARD
+.card {
+  transition: .3s;
+}
+.card.is-hoverable:hover {
+  box-shadow: 0 2px 18px rgba(0, 0, 0, .14);
+  transform: translateY(-4px);
+}
+.card .card-menu {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+// Notices
+
+.notices.is-bottom {
+    flex-direction: column-reverse;
+}
+.notices {
+    z-index: 9999;
+}
+.notices .snackbar {
+    z-index: 9999;
+}
+
+// Loading
+.loading-overlay.is-full-page {
+  z-index: 9 !important;
+}
+
+// Tags
+$values: 1 2 3 4 5;
+@each $value in $values {
+  .tag.letter-avatar-#{$value} {
+    height: #{$value}em;
+    width: #{$value}em;
+    @if $value == 4 {
+      span {
+        font-size: 20px
+      }
+    }
+    @if $value == 5 {
+      span {
+        font-size: 26px
+      }
+    }
+  }
+}
+
+/* BRAINTREE DROP IN */
+#dropin-container {
+  width: 100%;
+  font-family: "Karla", sans-serif !important;
+}

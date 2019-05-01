@@ -1,0 +1,12 @@
+{% load staticfiles %}
+<html>
+    {% include "layout/dashboard/head.html" %}
+    <body>
+        <main id="app" role="main">
+            {% include "layout/dashboard/header.html" %}
+            {% block content %}{% endblock %}
+            {% include "layout/dashboard/footer.html" %}
+        </main>
+        {% include "layout/dashboard/scripts.html" %}
+    </body>
+</html>

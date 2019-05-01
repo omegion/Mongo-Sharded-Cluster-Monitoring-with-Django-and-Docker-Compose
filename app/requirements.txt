@@ -1,0 +1,14 @@
+django
+djangorestframework
+django-filter
+django-celery
+django-celery-beat
+mysqlclient
+docker
+djongo
+mongoengine
+django-rest-framework-mongoengine
+pycurl
+boto3
+celery
+celery[sqs]

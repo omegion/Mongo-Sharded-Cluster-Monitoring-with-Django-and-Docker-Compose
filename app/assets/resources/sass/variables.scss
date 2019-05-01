@@ -1,0 +1,135 @@
+
+$spaceamounts: (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100); // Adjust this to include the pixel amounts you need.
+$sides: (top, bottom, left, right); // Leave this variable alone
+
+@each $space in $spaceamounts {
+  @each $side in $sides {
+    .m-#{str-slice($side, 0, 1)}-#{$space} {
+      margin-#{$side}: #{$space}px !important;
+    }
+
+    .p-#{str-slice($side, 0, 1)}-#{$space} {
+      padding-#{$side}: #{$space}px !important;
+    }
+  }
+  .m-#{$space} {
+    margin: #{$space}px !important;
+  }
+  .p-#{$space} {
+    padding: #{$space}px !important;
+  }
+  .height-#{$space} {
+    height: #{$space}em !important;
+  }
+}
+
+
+// 1. Import the initial variables
+@import "~bulma/sass/utilities/initial-variables";
+@import "~bulma/sass/utilities/functions";
+
+$primary: #3755BE;
+$primary-invert: findColorInvert($primary);
+$primary-soft: #e7ebf7;
+$primary-soft-invert: #3755BE;
+$primary-extra-soft: #f3f5fb;
+$primary-extra-soft-invert: findColorInvert($primary-extra-soft);
+$primary-background: #fdeff1;
+$primary-background-invert: findColorInvert($primary-background);
+$secondary: #ff8e88;
+$secondary-invert: findColorInvert($secondary);
+$secondary-soft: #ffe8e7;
+$secondary-soft-invert: findColorInvert($secondary-soft);
+$black: #020122;
+$black-invert: findColorInvert($black);
+$info: #3a66f7;
+$info-invert: findColorInvert($info);
+$warning: #ffce64;
+$warning-invert: findColorInvert($warning);
+$danger: #dc3139;
+$danger-invert: findColorInvert($danger);
+$success: #47bb67;
+$success-invert: findColorInvert($success);
+
+$twitter: #4099FF;
+$twitter-invert: findColorInvert($twitter);
+
+$body-background-color: $primary-background;
+$fullhd:1152;
+$family-sans-serif: "Karla", sans-serif;
+$family-primary: $family-sans-serif;
+$family-secondary: 'Roboto Slab', serif;
+
+$input-shadow:inset 0 1px 2px rgba($black, 0);
+
+
+//Navbar
+$navbar-item-hover-color: $primary;
+$navbar-dropdown-arrow: $primary;
+$navbar-dropdown-item-hover-color: $primary;
+$navbar-item-img-max-height: 1.95rem;
+$dropdown-item-active-color:	$primary-invert;
+$dropdown-item-active-background-color:	$primary;
+
+// Menu
+$menu-item-active-color: $black;
+$menu-item-active-background-color: $primary-soft;
+
+// Tabs
+$tabs-border-bottom-width: 3px;
+$tabs-link-active-color: $primary;
+$tabs-link-active-border-bottom-color: $primary;
+$tabs-toggle-link-hover-border-color: transparent;
+
+// Card
+$card-shadow: 0px 6px 10px 2px rgba(0, 0, 0, .08);
+
+// Dropdown
+$dropdown-content-shadow: $card-shadow;
+
+// Modal
+$modal-background-background-color: rgba($black, 0.5);
+$modal-content-width: 100%;
+$modal-content-spacing-mobile: 0px;
+$modal-card-head-background-color: #f8f9fa;
+$modal-card-head-radius: 10px;
+$modal-card-foot-radius: 10px;
+$modal-card-spacing: 0px;
+$modal-background-background-color: rgba(16, 2, 11, 0.6);
+
+// Button
+$button-focus-box-shadow-size: 0 0 0 0.25em;
+$button-disabled-opacity: 0.3;
+$button-border-width: 2px;
+
+$label-weight:600;
+
+// Input
+$input-focus-border-color: $secondary;
+$input-focus-box-shadow-size: 0 0 0 0.2em;
+$input-focus-box-shadow-color:rgba($secondary, 0.25);
+$input-arrow: $secondary;
+
+$pagination-focus-border-color: $primary;
+$pagination-current-background-color: $primary;
+$pagination-current-border-color: $primary;
+$pagination-hover-color: rgb(121, 85, 107);
+$pagination-focus-color: rgb(121, 85, 107);
+$pagination-active-color: rgb(121, 85, 107);
+
+// 5. Add new color variables to the color map.
+@import "~bulma/sass/utilities/derived-variables";
+$addColors: (
+  "twitter":($twitter, $twitter-invert),
+  "primary-soft":($primary-soft, $primary-soft-invert),
+  "primary-extra-soft":($primary-extra-soft, $primary-extra-soft-invert),
+  "secondary":($secondary, $secondary-invert),
+  "secondary-soft":($secondary-soft, $secondary-soft-invert),
+
+  "primary-background":($primary-background, $primary-background-invert),
+
+);
+$colors: map-merge($colors, $addColors);
+
+@import "~bulma";
+@import "~buefy/src/scss/buefy";

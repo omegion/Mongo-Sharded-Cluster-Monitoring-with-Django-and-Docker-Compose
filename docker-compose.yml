@@ -1,0 +1,146 @@
+version: '2.2'
+services:
+
+  # Django App
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: app
+    restart: always
+    command: python manage.py runserver 0.0.0.0:80
+    depends_on:
+      - db
+    ports:
+      - 100:80
+    # links:
+    #   - shard01a
+    volumes:
+      - ./app:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    # networks: 
+      # - backend
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: mongo
+      MYSQL_USER: "hakan"
+      MYSQL_PASSWORD: "hakan"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - 103:3306
+    volumes:
+      - db-volume:/var/lib/mysql
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: always
+    command: celery -A app worker -l warning --app app.celeryapp -Q default --autoscale=3,2 --pidfile=
+    environment:
+      DJANGO_SETTINGS_MODULE: 'app.settings'
+    volumes:
+      - ./app:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: always
+    command: celery -A app beat -l warning --app app.celeryapp --scheduler django_celery_beat.schedulers:DatabaseScheduler --pidfile=
+    environment:
+      DJANGO_SETTINGS_MODULE: 'app.settings'
+    volumes:
+      - ./app:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # Config Servers
+  config01:
+    image: mongo
+    command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+      - shards01configa-volume:/data/db
+
+  config02:
+    image: mongo
+    command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+      - shards01configb-volume:/data/db
+  config03:
+    image: mongo
+    command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+      - shards01configc-volume:/data/db
+
+  # # Shards
+  shard01a:
+    image: mongo
+    container_name: shard01a
+    command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+      - /var/run/docker.sock:/var/run/docker.soc
+      - shards01a-volume:/data/db
+    cpus: 0.2
+    mem_limit: 200000000
+
+  shard01b:
+    image: mongo
+    container_name: shard01b
+    command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+      - shards01b-volume:/data/db
+    cpus: 0.2
+    mem_limit: 200000000
+
+  shard01c:
+    image: mongo
+    container_name: shard01c
+    command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+      - shards01c-volume:/data/db
+    cpus: 0.2
+    mem_limit: 200000000
+
+  # # Router
+  router:
+    image: mongo
+    container_name: router
+    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017 --bind_ip_all
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./scripts:/scripts
+      - shardsrouter-volume:/data/db
+
+    depends_on:
+      - config01
+      - config02
+      - config03
+      - shard01a
+      - shard01b
+      - shard01c
+
+volumes:
+  db-volume:
+  shards01configa-volume:
+  shards01configb-volume:
+  shards01configc-volume:
+  shards01a-volume:
+  shards01b-volume:
+  shards01c-volume:
+  shardsrouter-volume:
+
+# networks:
+#   backend:
+#     driver: "bridge"

@@ -1,0 +1,32 @@
+{% load static %}
+
+ <head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="language" content="EN">
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}, crawly, crawl">
+    <meta name="author" content="{% if author == '' %}{{ author }}{% else %}Omegion{% endif %}">
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- OpenGraph Meta Tags -->
+    <meta name="og:title" property="og:title" content="{{ title }} - Crawly"/>
+    <meta name="og:url" property="og:url" content="{{ request.build_absolute_uri }}"/>
+    <meta name="og:image" property="og:image" content="{% if image == '' %}{{ image }}{% else %}{% static 'img/open_graph_placeholder.jpg' %}{% endif %}"/>
+    <meta name="og:site_name" property="og:site_name" content="Crawly"/>
+    <meta name="og:description" property="og:description" content="{{ description }}"/>
+    
+    <link rel="canonical" href="{{ request.build_absolute_uri }}"/>
+
+    <title>{{ title }} - Crawly</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+
+    <link rel="stylesheet" href="{% static "css/app.css" %}">
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="//cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto+Slab:400,700" rel="stylesheet">
+</head>
