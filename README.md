@@ -12,7 +12,7 @@ Django is used to virtualise the data on the backend. Moreover, Vue JS is used f
 ### Mongo Components
 
 * Config Server (3 member replica set): `config01`,`config02`,`config03`
-* 1 Shards (each a 3 member replica set):
+* 1 Shard (with 3 members replica set):
 	* `shard01a`,`shard01b`, `shard01c`
 * 1 Router (mongos): `router`
 
