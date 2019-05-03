@@ -1,7 +1,7 @@
 <template>
     <section>
         <div id="chart">
-            <apexchart type=area height=350 :options="chartOptions" :series="series" />
+            <apexchart ref="realtimeChart" type=area height=350 :options="chartOptions" :series="series" />
         </div>
     </section>
 </template>
@@ -37,6 +37,21 @@
                     },
                 ],
                 chartOptions: {
+                     chart: {
+                        animations: {
+                            enabled: true,
+                            easing: 'linear',
+                            dynamicAnimation: {
+                                speed: 3000
+                            }
+                        },
+                        toolbar: {
+                            show: false
+                        },
+                        zoom: {
+                            enabled: false
+                        }
+                    },
                     dataLabels: {
                         enabled: false
                     },
@@ -59,7 +74,7 @@
             this.attemptLoadReplica()        
             setInterval(() => {
                 this.attemptLoadReplica()           
-            }, 1000);   
+            }, 3000);   
         },
         methods: {
             attemptLoadReplica() {
@@ -68,7 +83,7 @@
             },
             loadReplica() {
                 let that = this
-                let url = that.replica.url+'?replica_id='+that.replicaId
+                let url = that.replica.url+'?page_size=500&replica_id='+that.replicaId
                 axios.get(url)
                     .then(function (response) {
                         that.replica.items = response.data.results

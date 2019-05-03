@@ -16,6 +16,10 @@ Django is used to virtualise the data on the backend. Moreover, Vue JS is used f
 	* `shard01a`,`shard01b`, `shard01c`
 * 1 Router (mongos): `router`
 
+### Docker Containers
+This system uses Docker container to create an virtual environment to test our cluster. FOr this purpose we have defined resources to replica container.
+The container has 20% of total CPU and 200MB of memory of the host.
+
 ### First Run (initial setup)
 **Start all of the containers** (daemonized)
 

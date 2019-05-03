@@ -59196,6 +59196,21 @@ __webpack_require__.r(__webpack_exports__);
         data: []
       }],
       chartOptions: {
+        chart: {
+          animations: {
+            enabled: true,
+            easing: 'linear',
+            dynamicAnimation: {
+              speed: 3000
+            }
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
+          }
+        },
         dataLabels: {
           enabled: false
         },
@@ -59220,7 +59235,7 @@ __webpack_require__.r(__webpack_exports__);
     this.attemptLoadReplica();
     setInterval(function () {
       _this.attemptLoadReplica();
-    }, 1000);
+    }, 3000);
   },
   methods: {
     attemptLoadReplica: function attemptLoadReplica() {
@@ -59229,7 +59244,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadReplica: function loadReplica() {
       var that = this;
-      var url = that.replica.url + '?replica_id=' + that.replicaId;
+      var url = that.replica.url + '?page_size=500&replica_id=' + that.replicaId;
       axios.get(url).then(function (response) {
         that.replica.items = response.data.results;
         that.series[0].data = that.replica.items.map(function (check) {
@@ -59298,7 +59313,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59327,7 +59341,7 @@ __webpack_require__.r(__webpack_exports__);
     this.attemptLoadReplicas();
     setInterval(function () {
       _this.attemptLoadReplicas();
-    }, 1000);
+    }, 5000);
   },
   methods: {
     attemptDropReplica: function attemptDropReplica(replica_id) {
@@ -59396,6 +59410,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -59412,14 +59438,39 @@ __webpack_require__.r(__webpack_exports__);
       replica: {
         url: '/api/v1/replicas/query/',
         query: '{"location" : "US", "factoryId" : {"$gte" : 1500}}',
+        insert_number: 0,
         result: '',
         result_show: false,
         item: [],
-        loading: false
+        loading: false,
+        insert_loading: false
       }
     };
   },
   methods: {
+    attemptRunInsert: function attemptRunInsert() {
+      this.replica.insert_loading = true;
+      this.runInsert();
+    },
+    runInsert: function runInsert() {
+      var that = this;
+      var data = {
+        number: that.replica.insert_number
+      };
+      var url = that.replica.url + 'insert/';
+      axios.post(url, data).then(function (response) {
+        that.$toast.open({
+          duration: 5000,
+          message: 'Insert operation is started',
+          position: 'is-bottom',
+          type: 'is-primary'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      })["finally"](function () {
+        that.replica.insert_loading = false;
+      });
+    },
     attemptRunQuery: function attemptRunQuery() {
       this.replica.loading = true;
       this.runQuery();
@@ -109096,6 +109147,7 @@ var render = function() {
       { attrs: { id: "chart" } },
       [
         _c("apexchart", {
+          ref: "realtimeChart",
           attrs: {
             type: "area",
             height: "350",
@@ -109212,7 +109264,7 @@ var render = function() {
       _c("div", { staticClass: "content is-medium" }, [
         _c("h3", { staticClass: "title is-3" }, [_vm._v("Query")]),
         _vm._v(" "),
-        _c("div", { staticClass: "box is-pb-5" }, [_c("query")], 1)
+        _c("div", { staticClass: "box" }, [_c("query")], 1)
       ])
     ])
   ])
@@ -109279,11 +109331,40 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "button is-primary is-pulled-right",
+          staticClass: "button is-primary ",
           class: { "is-loading": _vm.replica.loading },
           on: { click: _vm.attemptRunQuery }
         },
-        [_vm._v("Run")]
+        [_vm._v("\n        Run\n    ")]
+      ),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c(
+        "b-field",
+        { attrs: { label: "Insert Sample Data" } },
+        [
+          _c("b-numberinput", {
+            model: {
+              value: _vm.replica.insert_number,
+              callback: function($$v) {
+                _vm.$set(_vm.replica, "insert_number", $$v)
+              },
+              expression: "replica.insert_number"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "button is-primary is-mt-3",
+          class: { "is-loading": _vm.replica.insert_loading },
+          on: { click: _vm.attemptRunInsert }
+        },
+        [_vm._v("\n        Insert\n    ")]
       )
     ],
     1

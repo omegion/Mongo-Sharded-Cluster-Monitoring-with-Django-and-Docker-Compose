@@ -29,3 +29,6 @@ class CheckSerializer(serializers.ModelSerializer):
 
 class QuerySerializer(serializers.Serializer):
     query = serializers.CharField(required=True)
+
+class QueryInsertSerializer(serializers.Serializer):
+    number = serializers.IntegerField(required=True)

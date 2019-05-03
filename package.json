@@ -1,5 +1,5 @@
 {
-  "name": "Mongodb Cluster Health Checker",
+  "name": "mongodb-cluster-health-checker",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

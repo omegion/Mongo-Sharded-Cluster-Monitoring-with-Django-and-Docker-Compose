@@ -12,7 +12,6 @@
                             <button class="button is-primary" slot="trigger">
                                 <b-icon icon="menu-down"></b-icon>
                             </button>
-
                             <b-dropdown-item aria-role="listitem" @click="attemptDropReplica(replica_row.id)">Drop Primary</b-dropdown-item>
                         </b-dropdown>
                     </h4>
@@ -23,7 +22,7 @@
         <div class="column is-4">
             <div class="content is-medium">
                 <h3 class="title is-3">Query</h3>
-                <div class="box is-pb-5">
+                <div class="box">
                     <query></query>
                 </div>
             </div>
@@ -59,7 +58,7 @@
             this.attemptLoadReplicas()           
             setInterval(() => {
                 this.attemptLoadReplicas()           
-            }, 1000);
+            }, 5000);
         },
         methods: {
             attemptDropReplica(replica_id) {

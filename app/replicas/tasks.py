@@ -3,6 +3,8 @@ import time
 import subprocess
 import logging
 from django.conf import settings
+from django.utils import timezone
+import datetime
 
 # Models
 from replicas.models import Replica, Check
@@ -44,14 +46,15 @@ def container_stats(*args, **karg):
     if stats:
         cpuDelta = stats['cpu_stats']['cpu_usage']['total_usage'] -  stats['precpu_stats']['cpu_usage']['total_usage']
         systemDelta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-        cpu_usage = cpuDelta / systemDelta * 100
-        mem_usage = (stats['memory_stats']['usage']) / stats['memory_stats']['limit'] * 100
+        cpu_usage = cpuDelta / systemDelta * 100 * 5 # container can use only 20% of CPU
+        mem_usage = (stats['memory_stats']['usage'] - stats['memory_stats']['stats']['active_file']) / stats['memory_stats']['limit'] * 100
         read = stats['blkio_stats']['io_service_bytes_recursive'][0]['value']
 
     # check if replica checks exceeds
-    if replica.checks.count() > 100:
-        replica.checks.order_by('id').first().delete()
-
+    if replica.checks.count() > 100 and replica.checks.count() % 20 == 0:
+        for check in replica.checks.order_by('-id')[100:]:
+            check.delete()
+    
     replica.checks.create(
         cpu=round(cpu_usage, 4),
         memory=round(mem_usage, 4),
@@ -105,9 +108,20 @@ def start_reading_from_replica(*args, **karg):
     # for i in range(10):
     return db.customers.find(query).count()
 
+@task(soft_time_limit=2700, bind=True)
+def insert_data_to_replica_set(*args, **karg):
+    number = karg['number']
+    # start to read from replica set around 20 seconds
+    conn = MongoClient('router', 27017)
+    db = conn.test
+    for i in range(int(number)):
+        mydict = { "location": "US", "factoryId": i + 100000 }
+        db.customers.insert_one(mydict)
+
 def start_benchmark(replica_name, shard="shard01"):
 
     container_stats(name="shard01a")
+    # insert_data_to_replica()
     # start_reading_from_replica()
     # update_replica_set(shard=shard)
     # get primary replica
@@ -115,4 +129,5 @@ def start_benchmark(replica_name, shard="shard01"):
     # if primary:
     #     container_stats(name=primary.name)
     #     replica_down(primary.name)
-    update_replica_set(shard=shard)
+    # update_replica_set(shard=shard)
+    pass

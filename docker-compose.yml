@@ -8,11 +8,15 @@ services:
       dockerfile: docker/Dockerfile
     container_name: app
     restart: always
-    command: python manage.py runserver 0.0.0.0:80
+    command: python manage.py runserver 0.0.0.0:80 --insecure
     depends_on:
       - db
     ports:
       - 100:80
+    environment:
+      DJANGO_SETTINGS_MODULE: 'app.settings'
+      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
+      AWS_SECRET_ACCESS_KEY: '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'
     # links:
     #   - shard01a
     volumes:
@@ -30,6 +34,8 @@ services:
       MYSQL_PASSWORD: "hakan"
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
+      AWS_SECRET_ACCESS_KEY: '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'
     ports:
       - 103:3306
     volumes:
@@ -40,9 +46,11 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     restart: always
-    command: celery -A app worker -l warning --app app.celeryapp -Q default --autoscale=3,2 --pidfile=
+    command: celery -A app worker -l warning --app app.celeryapp -Q default --autoscale=4,3 --pidfile=
     environment:
       DJANGO_SETTINGS_MODULE: 'app.settings'
+      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
+      AWS_SECRET_ACCESS_KEY: '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'
     volumes:
       - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
@@ -55,6 +63,8 @@ services:
     command: celery -A app beat -l warning --app app.celeryapp --scheduler django_celery_beat.schedulers:DatabaseScheduler --pidfile=
     environment:
       DJANGO_SETTINGS_MODULE: 'app.settings'
+      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
+      AWS_SECRET_ACCESS_KEY: '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'
     volumes:
       - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
@@ -80,7 +90,7 @@ services:
       - ./scripts:/scripts
       - shards01configc-volume:/data/db
 
-  # # Shards
+  # Shards
   shard01a:
     image: mongo
     container_name: shard01a
@@ -112,7 +122,7 @@ services:
     cpus: 0.2
     mem_limit: 200000000
 
-  # # Router
+  # Router
   router:
     image: mongo
     container_name: router
@@ -140,7 +150,3 @@ volumes:
   shards01b-volume:
   shards01c-volume:
   shardsrouter-volume:
-
-# networks:
-#   backend:
-#     driver: "bridge"

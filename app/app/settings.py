@@ -17,7 +17,6 @@ import mongoengine
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -25,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'g-y0qb4jvp6^y2@v-*7c0f%7n-zcs9p!%3pki2gp)h%6p8_7%='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -145,8 +144,8 @@ REST_FRAMEWORK = {
 
 
 # AWS Credentials
-AWS_ACCESS_KEY_ID = 'AKIAJAFONKPWLNDB2UOQ'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 
 # Celery
 CELERY_BROKER_URL = "sqs://%s:%s@" % (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)

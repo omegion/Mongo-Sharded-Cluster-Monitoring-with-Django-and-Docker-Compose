@@ -18,7 +18,7 @@ from replicas.models import Replica, Check
 from replicas.api import serializers
 
 # Tasks
-from replicas.tasks import replica_down, start_reading_from_replica
+from replicas.tasks import replica_down, start_reading_from_replica, insert_data_to_replica_set
 
 class ListReplica(generics.ListAPIView):
     serializer_class = serializers.ReplicaSerializer
@@ -66,16 +66,29 @@ class QueryView(APIView):
     serializer_class = serializers.QuerySerializer
     
     def get_queryset(self):
-        site = Replica.objects
-        return site
+        return Replica.objects
 
     def post(self, request, format=None):
         import ast
         query = request.data['query']
-
         my_dict = ast.literal_eval(query)
-
         result = start_reading_from_replica(query=my_dict)
-        # replica_down(instance.name)
         return Response({'result' : result }, 
+            status = status.HTTP_202_ACCEPTED)
+
+class QueryInsertView(APIView):
+    serializer_class = serializers.QueryInsertSerializer
+    
+    def get_queryset(self):
+        return Replica.objects
+
+    def post(self, request, format=None):
+        number = request.data['number']
+        insert_data_to_replica_set.apply_async(
+            kwargs={'number': number},
+            countdown=0, # 1 sec
+            expires=2700, # 45 mins
+            queue='default',
+        )
+        return Response({'result' : True }, 
             status = status.HTTP_202_ACCEPTED)

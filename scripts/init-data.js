@@ -14,7 +14,7 @@
 // );
 
 // sh.enableBalancing("test.customers");
-var num = 200000
+var num = 2000
 for(var i=0; i<num; i++){
 
     db.customers.insert({
