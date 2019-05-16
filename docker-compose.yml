@@ -15,15 +15,11 @@ services:
       - 100:80
     environment:
       DJANGO_SETTINGS_MODULE: 'app.settings'
-      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
-      AWS_SECRET_ACCESS_KEY: '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'
-    # links:
-    #   - shard01a
+      AWS_ACCESS_KEY_ID: 'X'
+      AWS_SECRET_ACCESS_KEY: 'X'
     volumes:
       - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
-    # networks: 
-      # - backend
 
   db:
     image: mariadb
@@ -34,8 +30,8 @@ services:
       MYSQL_PASSWORD: "hakan"
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
-      AWS_SECRET_ACCESS_KEY: '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'
+      AWS_ACCESS_KEY_ID: 'X'
+      AWS_SECRET_ACCESS_KEY: 'X'
     ports:
       - 103:3306
     volumes:
@@ -49,8 +45,8 @@ services:
     command: celery -A app worker -l warning --app app.celeryapp -Q default --autoscale=4,3 --pidfile=
     environment:
       DJANGO_SETTINGS_MODULE: 'app.settings'
-      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
-      AWS_SECRET_ACCESS_KEY: '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'
+      AWS_ACCESS_KEY_ID: 'X'
+      AWS_SECRET_ACCESS_KEY: 'X'
     volumes:
       - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
@@ -63,8 +59,8 @@ services:
     command: celery -A app beat -l warning --app app.celeryapp --scheduler django_celery_beat.schedulers:DatabaseScheduler --pidfile=
     environment:
       DJANGO_SETTINGS_MODULE: 'app.settings'
-      AWS_ACCESS_KEY_ID: 'AKIA3EFIFQM56CEHMAXU'
-      AWS_SECRET_ACCESS_KEY: '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'
+      AWS_ACCESS_KEY_ID: 'X'
+      AWS_SECRET_ACCESS_KEY: 'X'
     volumes:
       - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
